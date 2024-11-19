@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GeneratorOptions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<Platform>WindowsMscv</Platform>
+	<IncludeDirs>
+		<IncludeDir Path="F:\Windows Kits\10\Include\10.0.19041.0\um"/>
+		<IncludeDir Path="F:\Windows Kits\10\Include\10.0.19041.0\shared"/>
+        <IncludeDir Path="C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um"/>
+        <IncludeDir Path="C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared"/>
+	</IncludeDirs>
+    <TranslationUnits>
+        <!--<TranslationUnit>
+            <Include Name="winerror.h"/>
+        </TranslationUnit>
+        <TranslationUnit>
+            <Include Name="objbase.h"/>
+        </TranslationUnit>
+        <TranslationUnit>
+            <Include Name="combaseapi.h"/>
+        </TranslationUnit>-->
+        <TranslationUnit>
+            <Include Name="Audioclient.h"/>
+        </TranslationUnit>
+        <!--<TranslationUnit>
+            <Include Name="mmdeviceapi.h"/>
+        </TranslationUnit>
+        <TranslationUnit>
+            <Include Name="wtypes.h" ForceGeneration="false"/>
+            <Include Name="propkeydef.h" ForceGeneration="false"/>
+            <Include Name="Functiondiscoverykeys_devpkey.h"/>
+        </TranslationUnit>-->
+    </TranslationUnits>
+	<BinaryDirs>
+		<BinaryDir Path="C:\Windows\System32"/>
+	</BinaryDirs>
+	<Binaries>
+		<BinaryFile Name="Ole32.dll"/>
+		<BinaryFile Name="Kernel32.dll"/>
+	</Binaries>
+	<Defines>
+		<Define Value="WIN32_LEAN_AND_MEAN"/>
+	</Defines>
+	<RootNamespace>WASAPI.net</RootNamespace>
+	<StaticTypename>wasapi</StaticTypename>
+	<SuppressUnmanagedCodeSecurity>true</SuppressUnmanagedCodeSecurity>
+	<GenerateFramework>true</GenerateFramework>
+	<IsFinal>true</IsFinal>
+	<KnownTypes/>
+	<KnownMacros/>
+	<CustomMacros>
+		<CustomMacro>
+			<Regex>DEFINE_GUID\(([^,)]*),([^,)]*),([^,)]*),([^,)]*),([^,,)]*),([^,)]*),([^,)]*),([^,)]*),([^,)]*),([^,)]*),([^,)]*),([^,)]*)\)</Regex>
+			<Replace>public static readonly GUID $1 = GuidHelper.CreateGuid($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);</Replace>
+		</CustomMacro>
+	</CustomMacros>
+	<CustomUsings/>
+    <ComMarkers>
+        <MarkerRegex>MIDL_INTERFACE\(\"([a-fA-F0-9\-]*)"\)</MarkerRegex>
+        <MarkerRegex>DECLSPEC_UUID\(\"([a-fA-F0-9\-]*)"\)</MarkerRegex>
+        <MarkerRegex>DX_DECLARE_INTERFACE\(\"([a-fA-F0-9\-]*)"\)</MarkerRegex>
+    </ComMarkers>
+</GeneratorOptions>

@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BindingsGenerator.Core", "BindingsGenerator.Core\BindingsGenerator.Core.csproj", "{2E2328D6-1AA5-4BFB-90F6-D5B79BBE51E3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "extern", "extern", "{2D5DB9A1-D1A3-48AD-80F1-342D81A66281}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DllExportScanner", "..\DllExportScanner\DllExportScanner\DllExportScanner.csproj", "{31DE042F-5EA5-4D50-924D-AEC453695E17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMacroParser", "..\CMacroParser\CMacroParser\CMacroParser.csproj", "{9C60B1FE-4C71-4F52-BB52-3E29EA530AAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BindingsGenerator.Generator.Unsafe", "BindingsGenerator.Generator.Unsafe\BindingsGenerator.Generator.Unsafe.csproj", "{EDC066DE-E253-4617-B82D-E6F1B57301E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BindingsGenerator.Generator.Unsafe.UnitTest", "BindingsGenerator.Generator.Unsafe.UnitTest\BindingsGenerator.Generator.Unsafe.UnitTest.csproj", "{7F37FF0B-4EAD-4B19-BAE3-B8864CB3076E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E2328D6-1AA5-4BFB-90F6-D5B79BBE51E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E2328D6-1AA5-4BFB-90F6-D5B79BBE51E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E2328D6-1AA5-4BFB-90F6-D5B79BBE51E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E2328D6-1AA5-4BFB-90F6-D5B79BBE51E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31DE042F-5EA5-4D50-924D-AEC453695E17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31DE042F-5EA5-4D50-924D-AEC453695E17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31DE042F-5EA5-4D50-924D-AEC453695E17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31DE042F-5EA5-4D50-924D-AEC453695E17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C60B1FE-4C71-4F52-BB52-3E29EA530AAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C60B1FE-4C71-4F52-BB52-3E29EA530AAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C60B1FE-4C71-4F52-BB52-3E29EA530AAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C60B1FE-4C71-4F52-BB52-3E29EA530AAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDC066DE-E253-4617-B82D-E6F1B57301E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDC066DE-E253-4617-B82D-E6F1B57301E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDC066DE-E253-4617-B82D-E6F1B57301E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDC066DE-E253-4617-B82D-E6F1B57301E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F37FF0B-4EAD-4B19-BAE3-B8864CB3076E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F37FF0B-4EAD-4B19-BAE3-B8864CB3076E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F37FF0B-4EAD-4B19-BAE3-B8864CB3076E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F37FF0B-4EAD-4B19-BAE3-B8864CB3076E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{31DE042F-5EA5-4D50-924D-AEC453695E17} = {2D5DB9A1-D1A3-48AD-80F1-342D81A66281}
+		{9C60B1FE-4C71-4F52-BB52-3E29EA530AAE} = {2D5DB9A1-D1A3-48AD-80F1-342D81A66281}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {791EA25E-E347-43BD-82E2-0F51B795E4A9}
+	EndGlobalSection
+EndGlobal
