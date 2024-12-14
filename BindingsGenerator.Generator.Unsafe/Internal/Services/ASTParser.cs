@@ -67,6 +67,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services
                 LanguageVersion = Enum.Parse<LanguageVersion>(_context.Options.LanguageVersion.ToString()),
                 SkipFunctionBodies = true,
                 SkipPrivateDeclarations = true,
+                NoBuiltinIncludes = true,
             };
 
             switch (_context.Options.Platform)

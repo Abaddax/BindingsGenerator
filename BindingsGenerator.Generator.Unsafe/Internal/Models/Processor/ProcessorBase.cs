@@ -234,6 +234,26 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Models.Processor
         /// <summary>
         /// Get token for declaration
         /// </summary>
+        protected ITypeToken? TryGetToken(Declaration declaration, Declaration? parent)
+        {
+            var definition = TryGetDefinition(declaration, parent);
+            if (definition == null)
+                return null;
+            return _tokenStore.Store(definition);
+        }
+        /// <summary>
+        /// Get token for type
+        /// </summary>
+        protected ITypeToken? TryGetToken(Type type, Declaration parent)
+        {
+            var definition = TryGetDefinition(type, parent);
+            if (definition == null)
+                return null;
+            return _tokenStore.Store(definition);
+        }
+        /// <summary>
+        /// Get token for declaration
+        /// </summary>
         protected ITypeToken GetToken(Declaration declaration, Declaration? parent)
         {
             return _tokenStore.Store(GetDefinition(declaration, parent));

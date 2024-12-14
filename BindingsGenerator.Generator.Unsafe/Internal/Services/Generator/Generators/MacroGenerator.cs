@@ -3,7 +3,6 @@ using BindingsGenerator.Generator.Unsafe.Internal.Definition.Definitions;
 using BindingsGenerator.Generator.Unsafe.Internal.Models.Generator;
 using CMacroParser;
 using CMacroParser.Contracts;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generators
@@ -40,8 +39,6 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
 
         protected override void GenerateDefinition(MacroDefinition macro)
         {
-            if (macro.Name == "AV_CH_LAYOUT_MONO")
-                Debugger.Break();
             if (Context.Options.KnownMacros.Contains(macro.Name))
                 return; //Already known, do not generate
 
@@ -142,8 +139,6 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
             }
             foreach (var macro in macros.Except(customMacros))
             {
-                if (macro.Name == "AV_CH_LAYOUT_MONO")
-                    Debugger.Break();
                 if (macro.Definition?.Expression == null)
                     continue;
                 if (macro.Definition.Expression.ContainsUnknown(_macros))

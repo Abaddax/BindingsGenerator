@@ -1,4 +1,4 @@
-﻿using BindingsGenerator.Generator.Unsafe.Internal.Definition.Common;
+﻿using AutoGenBindings.Generator.Unsafe.Internal.Models.Generator;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Definitions;
 using BindingsGenerator.Generator.Unsafe.Internal.Models.Generator;
 using BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Common;
@@ -30,7 +30,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
             if (Context.Options.GenerateFramework)
                 yield return $"{Context.Options.RootNamespace}.Framework";
             else
-                yield return "BindingsGenerator.Framework";
+                yield return "BindingsGenerator.Unsafe.Framework";
         }
 
         protected override void GenerateDefinitions(IEnumerable<ObjectDefinition> definitions)
@@ -137,6 +137,9 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
             WriteLine($"public unsafe partial interface {@class.Name} {ReplaceIUnknown(inheritanceString)}");
             using (BeginBlock())
             {
+                //GUID
+                WriteLine($"public static System.Guid Guid {{ get; }} = ComHelper.GetGuid<{@class.Name}>();");
+
                 //Functions
                 foreach (var function in @class.Functions)
                 {
@@ -154,11 +157,11 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                     WriteObsoletion(function);
                     WriteLine("[PreserveSig]");
 
-                    var returnType = _parameterHelper.GetReturnType(functionType, out var returnAttribute, customUsage: AttributeUsage.COM);
+                    var returnType = _parameterHelper.GetReturnType(functionType, out var returnAttribute, customUsage: Usage.COM);
                     if (!string.IsNullOrEmpty(returnAttribute))
                         WriteLine(returnAttribute);
 
-                    var parameters = _parameterHelper.GetParameters(functionType.Parameters.Skip(1), withAttributes: true, customUsage: AttributeUsage.COM);
+                    var parameters = _parameterHelper.GetParameters(functionType.Parameters.Skip(1), withAttributes: true, customUsage: Usage.COM);
                     var parameterNames = _parameterHelper.GetParamterNames(functionType.Parameters.Skip(1));
 
                     var functionName = function.Name;

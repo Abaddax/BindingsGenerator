@@ -1,4 +1,5 @@
-﻿using BindingsGenerator.Core.Contracts;
+﻿using AutoGenBindings.Generator.Unsafe.Internal.Models.Generator;
+using BindingsGenerator.Core.Contracts;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Contracts;
 using BindingsGenerator.Generator.Unsafe.Internal.Generator.Common;
 using BindingsGenerator.Generator.Unsafe.Internal.Models;
@@ -50,13 +51,13 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Common
             }
         }
 
-        public TypeMapping? GenerateMapping(IDefinition? definition)
+        public TypeMapping? GenerateMapping(IDefinition? definition, Usage usage)
         {
             if (definition == null)
                 return null;
             foreach (var generator in _generators)
             {
-                TypeMapping? mapping = generator.GenerateMapping(definition);
+                TypeMapping? mapping = generator.GenerateMapping(definition, usage);
                 if (mapping != null)
                 {
                     return mapping;
@@ -64,13 +65,13 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Common
             }
             return null;
         }
-        public NameScope? GenerateScope(IDefinition? definition)
+        public NameScope? GenerateScope(IDefinition? definition, Usage usage)
         {
             if (definition == null)
                 return null;
             foreach (var generator in _generators)
             {
-                NameScope? scope = generator.GenerateScope(definition);
+                NameScope? scope = generator.GenerateScope(definition, usage);
                 if (scope != null)
                 {
                     return scope;

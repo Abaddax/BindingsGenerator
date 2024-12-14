@@ -1,11 +1,11 @@
-﻿using BindingsGenerator.Generator.Unsafe.Internal.Definition.Common;
+﻿using AutoGenBindings.Generator.Unsafe.Internal.Models.Generator;
 
 namespace BindingsGenerator.Generator.Unsafe.Internal.Generator.Common
 {
     internal record TypeMapping
     {
         public required string Typename { get; init; }
-        public TypeAttribute? MarshalAs { get; init; }
-        public TypeAttribute[] CustomAttributes { get; init; } = Array.Empty<TypeAttribute>();
+        public required Usage Usage { get; init; }
+        public TypeAttribute[] MarshalAs { get; init; } = Array.Empty<TypeAttribute>();
     }
 }

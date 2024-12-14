@@ -23,7 +23,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
             if (Context.Options.GenerateFramework)
                 yield return $"{Context.Options.RootNamespace}.Framework";
             else
-                yield return "BindingsGenerator.Framework";
+                yield return "BindingsGenerator.Unsafe.Framework";
         }
 
         protected override void GenerateDefinition(FixedSizeArrayDefinition array)
@@ -48,10 +48,11 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                     WriteLine($"public static readonly int {lengthPropertyName} = {length};");
                     WriteLine($"public int Length => {lengthPropertyName};");
 
-                    if (array.IsPrimitive)
-                        WritePrimitiveFixedArray(elementTypeName, length);
-                    else
-                        WriteComplexFixedArray(elementTypeName, length);
+                    //Inline arrays causes debugger issues
+                    //if (array.IsPrimitive)
+                    //    WritePrimitiveFixedArray(elementTypeName, length);
+                    //else
+                    WriteComplexFixedArray(elementTypeName, length);
 
                     WriteLine($"public static implicit operator {elementTypeName}[]({arrayName} @struct) => @struct.ToArray();");
                 }

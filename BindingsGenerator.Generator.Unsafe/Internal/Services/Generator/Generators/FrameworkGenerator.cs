@@ -13,7 +13,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 if (Context.Options.GenerateFramework)
                     return $"{Context.Options.RootNamespace}.Framework";
                 else
-                    return "BindingsGenerator.Framework";
+                    return "BindingsGenerator.Unsafe.Framework";
             }
         }
 

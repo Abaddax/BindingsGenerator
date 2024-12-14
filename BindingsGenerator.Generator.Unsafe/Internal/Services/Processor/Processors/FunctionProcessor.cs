@@ -35,6 +35,8 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Processor.Process
 
             if (HasTemplatedParameters(function))
                 return null;
+            if (HasFunctionBody(function))
+                return null;
 
             //Check if currently processing
             var processingDefinition = TryGetProcessingDefinition(function.USR);
@@ -63,6 +65,11 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Processor.Process
                     FunctionSignature = null
                 }))
             {
+                //Methods are always thiscall?
+                bool isMemberFunction = false;
+                if (declaration is Method method && !method.IsStatic)
+                    isMemberFunction = true;
+
                 //Create definition
                 definition = new FunctionDefinition()
                 {
@@ -72,7 +79,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Processor.Process
                     Caller = TryGetCaller(function),
                     LibraryName = TryGetFunctionExport(function.Mangled)?.LibraryName ?? string.Empty,
                     FunctionSignature = function.Mangled,
-                    CallingConvention = function.CallingConvention,
+                    CallingConvention = isMemberFunction ? CallingConvention.ThisCall : function.CallingConvention,
                     ReturnType = GetReturnTypeToken(function.ReturnType.Type, function),
                     ReturnComment = function.GetReturnDocumentation(),
                     Parameters = GetParameters(function.Parameters, function).ToArray(),
@@ -178,6 +185,12 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Processor.Process
                 if (type.GetType().Name.ToLowerInvariant().Contains("template"))
                     return true;
             }
+            return false;
+        }
+        private bool HasFunctionBody(Function function)
+        {
+            if (!string.IsNullOrEmpty(function.Body))
+                return true;
             return false;
         }
         private int GetOverloadCount(FunctionDefinitionBase function)

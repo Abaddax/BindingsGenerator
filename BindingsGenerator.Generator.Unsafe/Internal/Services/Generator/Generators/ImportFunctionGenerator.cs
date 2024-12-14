@@ -1,4 +1,5 @@
-﻿using BindingsGenerator.Generator.Unsafe.Internal.Definition.Common;
+﻿using AutoGenBindings.Generator.Unsafe.Internal.Models.Generator;
+using BindingsGenerator.Generator.Unsafe.Internal.Definition.Common;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Contracts;
 using BindingsGenerator.Generator.Unsafe.Internal.Generator.Common;
 using BindingsGenerator.Generator.Unsafe.Internal.Models.Generator;
@@ -33,22 +34,30 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
             if (Context.Options.GenerateFramework)
                 yield return $"{Context.Options.RootNamespace}.Framework";
             else
-                yield return "BindingsGenerator.Framework";
+                yield return "BindingsGenerator.Unsafe.Framework";
             yield return $"static {Context.Options.RootNamespace}.vectors";
         }
 
-        protected override TypeMapping? GenerateTypeMapping(IDefinition definition)
+        protected override TypeMapping? GenerateTypeMapping(IDefinition definition, Usage usage)
         {
+            //Edge case
+            if (usage.HasFlag(Usage.Field) && !usage.HasFlag(Usage.COM))
+                return null;
+
             if (definition?.Name == "char*")
             {
                 return new TypeMapping()
                 {
                     Typename = "string",
-                    MarshalAs = new TypeAttribute()
-                    {
-                        Usage = AttributeUsage.Parameter | AttributeUsage.ReturnValue | AttributeUsage.Field | AttributeUsage.COM,
-                        Attribute = "MarshalAs(UnmanagedType.LPWStr)"
-                    }
+                    Usage = usage,
+                    MarshalAs =
+                    [
+                        new TypeAttribute()
+                        {
+                            Usage = Usage.Parameter | Usage.ReturnValue | Usage.COM,
+                            Attribute = "MarshalAs(UnmanagedType.LPStr)"
+                        }
+                    ]
                 };
             }
             if (definition?.Name == "sbyte*")
@@ -56,11 +65,15 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 return new TypeMapping()
                 {
                     Typename = "string",
-                    MarshalAs = new TypeAttribute()
-                    {
-                        Usage = AttributeUsage.Parameter | AttributeUsage.ReturnValue | AttributeUsage.Field | AttributeUsage.COM,
-                        Attribute = "MarshalAs(UnmanagedType.LPStr)"
-                    }
+                    Usage = usage,
+                    MarshalAs =
+                    [
+                        new TypeAttribute()
+                        {
+                            Usage = Usage.Parameter | Usage.ReturnValue | Usage.COM,
+                            Attribute = "MarshalAs(UnmanagedType.LPStr)"
+                        }
+                    ]
                 };
             }
             return null;

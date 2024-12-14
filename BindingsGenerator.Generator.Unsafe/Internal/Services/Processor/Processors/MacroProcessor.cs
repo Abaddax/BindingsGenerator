@@ -5,6 +5,7 @@ using CppSharp.AST;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using IDefinition = BindingsGenerator.Generator.Unsafe.Internal.Definition.Contracts.IDefinition;
 using MacroDefinition = BindingsGenerator.Generator.Unsafe.Internal.Definition.Definitions.MacroDefinition;
 
@@ -66,20 +67,16 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Processor.Process
             IMacroDefinition? macroDefinition;
             try
             {
-                macroDefinition = MacroParser.ParseMacro($"{macro.Name} {macro.Expression}");
+                macroDefinition = macro.Expression switch
+                {
+                    //CppSharp does not respect function macros
+                    string expression when Regex.IsMatch(expression, "^\\([^\\(\\)]*\\) ") => MacroParser.ParseMacro($"{macro.Name}{macro.Expression}"),
+                    _ => MacroParser.ParseMacro($"{macro.Name} {macro.Expression}")
+                };
             }
-            catch (Exception ex1)
+            catch (Exception ex)
             {
-                //Try again without gap 
-                //CppSharp does not respect function macros
-                try
-                {
-                    macroDefinition = MacroParser.ParseMacro($"{macro.Name}{macro.Expression}");
-                }
-                catch (Exception ex2)
-                {
-                    macroDefinition = null;
-                }
+                macroDefinition = null;
             }
 
             return new MacroDefinition()

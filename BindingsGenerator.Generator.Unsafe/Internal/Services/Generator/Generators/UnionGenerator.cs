@@ -1,4 +1,4 @@
-﻿using BindingsGenerator.Generator.Unsafe.Internal.Definition.Common;
+﻿using AutoGenBindings.Generator.Unsafe.Internal.Models.Generator;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Definitions;
 using BindingsGenerator.Generator.Unsafe.Internal.Models.Generator;
 using BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Common;
@@ -24,14 +24,14 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
             yield return "System.Runtime.InteropServices";
         }
 
-        protected override NameScope? GenerateTypeScope(UnionDefinition union)
+        protected override NameScope? GenerateTypeScope(UnionDefinition union, Usage usage)
         {
             return new NameScope()
             {
                 ScopeName = union.Name,
                 IsNamespace = false,
                 ScopePrefix = "public unsafe partial struct",
-                ParentScope = TryGetScope(@union.Namespace?.Definition)
+                ParentScope = TryGetScope(@union.Namespace?.Definition, usage)
             };
         }
 
@@ -56,8 +56,8 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                         if (!field.IsStatic)
                             WriteLine($"[FieldOffset({field.FieldOffset})]");
 
-                        var typeName = _typeHelper.GetFullTypeName(field.FieldType, useMapping: true);
-                        var marshalAs = _typeHelper.GetTypeMarshalAs(field.FieldType, AttributeUsage.Field);
+                        var typeName = _typeHelper.GetFullTypeName(field.FieldType, useMapping: true, usage: Usage.Field);
+                        var marshalAs = _typeHelper.GetTypeMarshalAs(field.FieldType, Usage.Field);
                         if (!string.IsNullOrEmpty(marshalAs))
                             WriteLine($"[{marshalAs}]");
 

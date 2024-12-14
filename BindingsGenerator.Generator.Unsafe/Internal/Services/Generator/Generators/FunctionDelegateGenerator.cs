@@ -1,4 +1,5 @@
-﻿using BindingsGenerator.Generator.Unsafe.Internal.Definition.Common;
+﻿using AutoGenBindings.Generator.Unsafe.Internal.Models.Generator;
+using BindingsGenerator.Generator.Unsafe.Internal.Definition.Common;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Contracts;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Definitions;
 using BindingsGenerator.Generator.Unsafe.Internal.Generator.Common;
@@ -30,10 +31,10 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
             if (Context.Options.GenerateFramework)
                 yield return $"{Context.Options.RootNamespace}.Framework";
             else
-                yield return "BindingsGenerator.Framework";
+                yield return "BindingsGenerator.Unsafe.Framework";
         }
 
-        protected override TypeMapping? GenerateTypeMapping(IDefinition definition)
+        protected override TypeMapping? GenerateTypeMapping(IDefinition definition, Usage usage)
         {
             //Function
             if (definition is FunctionDefinition function1)
@@ -41,6 +42,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 return new TypeMapping()
                 {
                     Typename = $"{GenerateNestedName(function1, out _, out _)}_delegate",
+                    Usage = usage,
                 };
             }
             //Delegate
@@ -49,6 +51,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 return new TypeMapping()
                 {
                     Typename = $"{GenerateNestedName(function2, out _, out _)}_delegate",
+                    Usage = usage,
                 };
             }
             //Function pointer
@@ -58,11 +61,15 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 return new TypeMapping()
                 {
                     Typename = $"{GenerateNestedName(function3, out _, out _)}_delegate*",
-                    MarshalAs = new TypeAttribute()
-                    {
-                        Usage = AttributeUsage.Parameter | AttributeUsage.ReturnValue | AttributeUsage.Field,
-                        Attribute = "MarshalAs(UnmanagedType.FunctionPtr)"
-                    }
+                    Usage = usage,
+                    MarshalAs =
+                    [
+                        new TypeAttribute()
+                        {
+                            Usage = Usage.Parameter | Usage.ReturnValue | Usage.Field,
+                            Attribute = "MarshalAs(UnmanagedType.FunctionPtr)"
+                        }
+                    ]
                 };
             }
             //Delegate pointer
@@ -72,23 +79,27 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 return new TypeMapping()
                 {
                     Typename = $"{GenerateNestedName(function4, out _, out _)}_delegate*",
-                    MarshalAs = new TypeAttribute()
-                    {
-                        Usage = AttributeUsage.Parameter | AttributeUsage.ReturnValue | AttributeUsage.Field,
-                        Attribute = "MarshalAs(UnmanagedType.FunctionPtr)"
-                    }
+                    Usage = usage,
+                    MarshalAs =
+                    [
+                        new TypeAttribute()
+                        {
+                            Usage = Usage.Parameter | Usage.ReturnValue | Usage.Field,
+                            Attribute = "MarshalAs(UnmanagedType.FunctionPtr)"
+                        }
+                    ]
                 };
             }
             return null;
         }
-        protected override NameScope? GenerateTypeScope(FunctionDefinitionBase function)
+        protected override NameScope? GenerateTypeScope(FunctionDefinitionBase function, Usage usage)
         {
             return new NameScope()
             {
                 ScopeName = GenerateNestedName(function, out _, out var parent),
                 IsNamespace = false,
                 ScopePrefix = null, //Functions do not support nesting
-                ParentScope = TryGetScope(parent)
+                ParentScope = TryGetScope(parent, usage)
             };
         }
 

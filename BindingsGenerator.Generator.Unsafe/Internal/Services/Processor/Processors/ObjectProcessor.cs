@@ -122,11 +122,14 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Processor.Process
                 }
 
                 //Create new
-                var token = GetToken(function, null);
-                if (token.Definition is IAliasDefinition alias)
+                var token = TryGetToken(function, null);
+                if (token?.Definition is IAliasDefinition alias)
                     token = alias.TryCast<FunctionDefinition>();
                 if (token is not ITypeToken<FunctionDefinition> functionToken)
-                    throw new InvalidOperationException($"Class function can not be processed. {function.Type?.GetType()}");
+                {
+                    Logger?.LogWarning("", $"Skipped function {function.Name} for {@class.Name}. Function can not be processed.", function.TranslationUnit.FileName, function.LineNumberStart);
+                    continue;
+                }
 
                 if (functions.Any(member => member.FunctionType.FinalDefinition.ID == functionToken.FinalDefinition.ID))
                     continue; //Already present

@@ -1,4 +1,5 @@
-﻿using BindingsGenerator.Generator.Unsafe.Internal.Definition.Definitions;
+﻿using AutoGenBindings.Generator.Unsafe.Internal.Models.Generator;
+using BindingsGenerator.Generator.Unsafe.Internal.Definition.Definitions;
 using BindingsGenerator.Generator.Unsafe.Internal.Models.Generator;
 using BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Common;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,14 +19,14 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
             _typeHelper = serviceProvider.GetRequiredService<TypeHelper>();
         }
 
-        protected override NameScope? GenerateTypeScope(EnumerationDefinition @enum)
+        protected override NameScope? GenerateTypeScope(EnumerationDefinition @enum, Usage usage)
         {
             return new NameScope()
             {
                 ScopeName = @enum.Name,
                 IsNamespace = false,
                 ScopePrefix = null, //enums do not support nesting
-                ParentScope = GenerateScope(@enum.Namespace?.Definition)
+                ParentScope = TryGetScope(@enum.Namespace?.Definition, usage)
             };
         }
 

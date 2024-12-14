@@ -1,4 +1,5 @@
-﻿using BindingsGenerator.Core.Contracts;
+﻿using AutoGenBindings.Generator.Unsafe.Internal.Models.Generator;
+using BindingsGenerator.Core.Contracts;
 using BindingsGenerator.Core.Models;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Common;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Contracts;
@@ -38,24 +39,24 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Models.Generator
         }
 
 
-        protected override TypeMapping? GenerateTypeMapping(IDefinition definition)
+        protected override TypeMapping? GenerateTypeMapping(IDefinition definition, Usage usage)
         {
             if (definition is not TDefinition _definition)
                 return null;
-            return GenerateTypeMapping(_definition);
+            return GenerateTypeMapping(_definition, usage);
         }
-        protected virtual TypeMapping? GenerateTypeMapping(TDefinition definition)
+        protected virtual TypeMapping? GenerateTypeMapping(TDefinition definition, Usage usage)
         {
             return null;
         }
 
-        protected override NameScope? GenerateTypeScope(IDefinition definition)
+        protected override NameScope? GenerateTypeScope(IDefinition definition, Usage usage)
         {
             if (definition is not TDefinition _definition)
                 return null;
-            return GenerateTypeScope(_definition);
+            return GenerateTypeScope(_definition, usage);
         }
-        protected virtual NameScope? GenerateTypeScope(TDefinition definition)
+        protected virtual NameScope? GenerateTypeScope(TDefinition definition, Usage usage)
         {
             return null;
         }
@@ -177,13 +178,13 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Models.Generator
             _memoryStream.Seek(0, SeekOrigin.Begin);
         }
 
-        public TypeMapping? GenerateMapping(IDefinition definition)
+        public TypeMapping? GenerateMapping(IDefinition definition, Usage usage)
         {
-            return GenerateTypeMapping(definition);
+            return GenerateTypeMapping(definition, usage);
         }
-        public NameScope? GenerateScope(IDefinition definition)
+        public NameScope? GenerateScope(IDefinition definition, Usage usage)
         {
-            return GenerateTypeScope(definition);
+            return GenerateTypeScope(definition, usage);
         }
 
         protected virtual void GenerateDefinitions(IEnumerable<IDefinition> definitions)
@@ -198,23 +199,23 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Models.Generator
             return;
         }
 
-        protected virtual TypeMapping? GenerateTypeMapping(IDefinition definition)
+        protected virtual TypeMapping? GenerateTypeMapping(IDefinition definition, Usage usage)
         {
             return null;
         }
-        protected virtual NameScope? GenerateTypeScope(IDefinition definition)
+        protected virtual NameScope? GenerateTypeScope(IDefinition definition, Usage usage)
         {
             return null;
         }
 
         #region Helper
-        protected TypeMapping? TryGetMapping(IDefinition? definition)
+        protected TypeMapping? TryGetMapping(IDefinition? definition, Usage usage)
         {
-            return _baseGenerator.GenerateMapping(definition);
+            return _baseGenerator.GenerateMapping(definition, usage);
         }
-        protected NameScope? TryGetScope(IDefinition? definition)
+        protected NameScope? TryGetScope(IDefinition? definition, Usage usage)
         {
-            return _baseGenerator.GenerateScope(definition);
+            return _baseGenerator.GenerateScope(definition, usage);
         }
         #endregion
 

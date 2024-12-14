@@ -1,4 +1,5 @@
-﻿using BindingsGenerator.Generator.Unsafe.Internal.Definition.Common;
+﻿using AutoGenBindings.Generator.Unsafe.Internal.Models.Generator;
+using BindingsGenerator.Generator.Unsafe.Internal.Definition.Common;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Contracts;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Definitions;
 using BindingsGenerator.Generator.Unsafe.Internal.Generator.Common;
@@ -29,12 +30,14 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
             if (Context.Options.GenerateFramework)
                 yield return $"{Context.Options.RootNamespace}.Framework";
             else
-                yield return "BindingsGenerator.Framework";
+                yield return "BindingsGenerator.Unsafe.Framework";
             yield return $"static {Context.Options.RootNamespace}.vectors";
         }
 
-        protected override TypeMapping? GenerateTypeMapping(IDefinition definition)
+        protected override TypeMapping? GenerateTypeMapping(IDefinition definition, Usage usage)
         {
+            if (definition is TypeDefinition typeDefinition)
+                definition = typeDefinition.GetNestedType();
             if (definition is ObjectDefinition class1)
             {
                 //No special alias
@@ -48,6 +51,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                     return new TypeMapping()
                     {
                         Typename = $"{@class1.Name}_Instance",
+                        Usage = usage
                     };
                 }
             }
@@ -59,23 +63,35 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 {
                     return null;
                 }
+                else if (usage.HasFlag(Usage.COM) && class2.IsComObject == null)
+                {
+                    return new TypeMapping()
+                    {
+                        Typename = $"{@class2.Name}_Instance*",
+                        Usage = usage
+                    };
+                }
                 //Interface
                 else
                 {
                     return new TypeMapping()
                     {
                         Typename = @class2.Name,
-                        MarshalAs = new TypeAttribute()
-                        {
-                            Usage = AttributeUsage.Parameter | AttributeUsage.ReturnValue,
-                            Attribute = $"MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeInstanceMarshaler<{_typeHelper.GetFullTypeName(@class2, useMapping: false)}_Impl>))"
-                        }
+                        Usage = usage,
+                        MarshalAs =
+                        [
+                            new TypeAttribute()
+                            {
+                                Usage = Usage.Parameter | Usage.ReturnValue,
+                                Attribute = $"MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeInstanceMarshaler<{_typeHelper.GetFullTypeName(@class2, useMapping: false)}_Impl>))"
+                            }
+                        ]
                     };
                 }
             }
             return null;
         }
-        protected override NameScope? GenerateTypeScope(ObjectDefinition @class)
+        protected override NameScope? GenerateTypeScope(ObjectDefinition @class, Usage usage)
         {
             if (@class.IsPOD() && Context.Options.IsFinal)
             {
@@ -84,7 +100,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                     ScopeName = @class.Name,
                     IsNamespace = false,
                     ScopePrefix = "public unsafe partial struct",
-                    ParentScope = TryGetScope(@class.Namespace?.Definition)
+                    ParentScope = TryGetScope(@class.Namespace?.Definition, usage)
                 };
             }
             else
@@ -94,7 +110,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                     ScopeName = @class.Name,
                     IsNamespace = false,
                     ScopePrefix = "public unsafe partial interface",
-                    ParentScope = TryGetScope(@class.Namespace?.Definition)
+                    ParentScope = TryGetScope(@class.Namespace?.Definition, usage)
                 };
             }
         }
@@ -103,7 +119,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
         {
             using (BeginNamespace(@class))
             {
-                if (@class.IsPOD() && Context.Options.IsFinal)
+                if (@class.IsPOD() && Context.Options.IsFinal && @class.IsComObject == null)
                 {
                     GeneratePOD(@class);
                 }
@@ -137,8 +153,8 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                     if (!field.IsStatic)
                         WriteLine($"[FieldOffset({field.FieldOffset})]");
 
-                    var typeName = _typeHelper.GetFullTypeName(field.FieldType, useMapping: true);
-                    var marshalAs = _typeHelper.GetTypeMarshalAs(field.FieldType, AttributeUsage.Field);
+                    var typeName = _typeHelper.GetFullTypeName(field.FieldType, useMapping: true, usage: Usage.Field);
+                    var marshalAs = _typeHelper.GetTypeMarshalAs(field.FieldType, Usage.Field);
                     if (!string.IsNullOrEmpty(marshalAs))
                         WriteLine($"[{marshalAs}]");
 
@@ -161,6 +177,10 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
 
             using (BeginBlock())
             {
+                //GUID
+                if (@class.IsComObject != null)
+                    WriteLine($"public static System.Guid Guid {{ get; }} = Guid.Parse(\"{@class.IsComObject}\");");
+
                 //Fields
                 foreach (var field in @class.Fields)
                 {

@@ -1,4 +1,5 @@
-﻿using BindingsGenerator.Generator.Unsafe.Internal.Definition.Common;
+﻿using AutoGenBindings.Generator.Unsafe.Internal.Models.Generator;
+using BindingsGenerator.Generator.Unsafe.Internal.Definition.Common;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Contracts;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Definitions;
 using BindingsGenerator.Generator.Unsafe.Internal.Models.Generator;
@@ -71,15 +72,15 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Common
         /// Build function parameter list
         /// </summary>
         /// <returns>int a, out int b, [MarshalAs(UnmanagedType.LPWStr)] ref string c</returns>
-        public string GetParameters(IEnumerable<FunctionParameter> parameters, bool withAttributes = true, bool useMapping = true, AttributeUsage customUsage = AttributeUsage.None)
+        public string GetParameters(IEnumerable<FunctionParameter> parameters, bool withAttributes = true, bool useMapping = true, Usage customUsage = Usage.Unknown)
         {
             List<string> names = new();
-
+            var usage = Usage.Parameter | customUsage;
             foreach (var parameter in parameters)
             {
                 var type = GetParamterType(parameter, out var qualifier);
-                var typeName = _typeHelper.GetFullTypeName(type, useMapping: useMapping);
-                var marshalAs = _typeHelper.GetTypeMarshalAs(type, AttributeUsage.Parameter | customUsage);
+                var typeName = _typeHelper.GetFullTypeName(type, useMapping: useMapping, usage: usage);
+                var marshalAs = _typeHelper.GetTypeMarshalAs(type, usage: usage);
 
                 var name = $"{typeName} @{parameter.Name}";
                 if (!string.IsNullOrEmpty(qualifier))
@@ -91,10 +92,11 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Common
             return string.Join(", ", names);
         }
 
-        public string GetReturnType(FunctionDefinitionBase function, out string? returnAttribute, bool useMapping = true, AttributeUsage customUsage = AttributeUsage.None)
+        public string GetReturnType(FunctionDefinitionBase function, out string? returnAttribute, bool useMapping = true, Usage customUsage = Usage.Unknown)
         {
-            var typeName = _typeHelper.GetFullTypeName(function.ReturnType, useMapping: useMapping);
-            var marshalAs = _typeHelper.GetTypeMarshalAs(function.ReturnType, AttributeUsage.ReturnValue | customUsage);
+            var usage = Usage.ReturnValue | customUsage;
+            var typeName = _typeHelper.GetFullTypeName(function.ReturnType, useMapping: useMapping, usage: usage);
+            var marshalAs = _typeHelper.GetTypeMarshalAs(function.ReturnType, usage: usage);
             if (string.IsNullOrEmpty(marshalAs))
                 returnAttribute = null;
             else

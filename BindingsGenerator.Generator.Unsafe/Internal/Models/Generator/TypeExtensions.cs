@@ -1,4 +1,5 @@
 ﻿using BindingsGenerator.Generator.Unsafe.Internal.Definition.Common;
+using BindingsGenerator.Generator.Unsafe.Internal.Definition.Contracts;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Definitions;
 using CppSharp.AST;
 
@@ -42,6 +43,20 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Models.Generator
             if (typeDefintion is not PointerDefinition pointerDefinition)
                 return 1;
             return pointerDefinition.GetPointerDepth() + 1;
+        }
+        public static IDefinition GetPointedType(this PointerDefinition pointer)
+        {
+            var typeDefintion = pointer.Type.Definition;
+            if (typeDefintion is not PointerDefinition pointerDefinition)
+                return typeDefintion!;
+            return pointerDefinition.GetPointedType();
+        }
+        public static IDefinition GetNestedType(this TypeDefinition type)
+        {
+            var nestedType = type.Type.Definition;
+            if (nestedType is TypeDefinition typeDef)
+                return typeDef.GetNestedType();
+            return nestedType!;
         }
 
         public static string GetFunctionName(this FunctionDefinitionBase function)

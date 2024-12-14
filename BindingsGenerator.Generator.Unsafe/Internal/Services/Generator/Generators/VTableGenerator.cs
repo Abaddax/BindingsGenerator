@@ -1,4 +1,5 @@
-﻿using BindingsGenerator.Generator.Unsafe.Internal.Definition.Definitions;
+﻿using AutoGenBindings.Generator.Unsafe.Internal.Models.Generator;
+using BindingsGenerator.Generator.Unsafe.Internal.Definition.Definitions;
 using BindingsGenerator.Generator.Unsafe.Internal.Models.Generator;
 using BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Common;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,14 +24,14 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
             yield return "System.Runtime.InteropServices";
         }
 
-        protected override NameScope? GenerateTypeScope(VTableDefinition vtable)
+        protected override NameScope? GenerateTypeScope(VTableDefinition vtable, Usage usage)
         {
             return new NameScope()
             {
                 ScopeName = vtable.Name,
                 IsNamespace = false,
                 ScopePrefix = "unknown",
-                ParentScope = TryGetScope(vtable.Object?.Definition)
+                ParentScope = TryGetScope(vtable.Object?.Definition, usage)
             };
         }
 
