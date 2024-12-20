@@ -58,7 +58,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Common
             foreach (var generator in _generators)
             {
                 TypeMapping? mapping = generator.GenerateMapping(definition, usage);
-                if (mapping != null)
+                if (mapping != null && mapping.TypeUsage.HasFlag(usage))
                 {
                     return mapping;
                 }

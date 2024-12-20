@@ -48,6 +48,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Processor.Process
                 PrimitiveType.Short => "short",
                 PrimitiveType.UShort => "short",
                 PrimitiveType.WideChar => "char",
+                PrimitiveType.Char16 => "char",
                 //32-Bit
                 PrimitiveType.Int => "int",
                 PrimitiveType.UInt => "uint",

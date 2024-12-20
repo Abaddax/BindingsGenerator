@@ -1,6 +1,7 @@
 ﻿using AutoGenBindings.Generator.Unsafe.Internal.Models.Generator;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Common;
 using BindingsGenerator.Generator.Unsafe.Internal.Definition.Contracts;
+using BindingsGenerator.Generator.Unsafe.Internal.Definition.Definitions;
 using BindingsGenerator.Generator.Unsafe.Internal.Generator.Common;
 using BindingsGenerator.Generator.Unsafe.Internal.Models.Generator;
 using BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Common;
@@ -40,43 +41,45 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
 
         protected override TypeMapping? GenerateTypeMapping(IDefinition definition, Usage usage)
         {
-            //Edge case
-            if (usage.HasFlag(Usage.Field) && !usage.HasFlag(Usage.COM))
-                return null;
+            var typeName = GetBaseTypeName(definition);
 
-            if (definition?.Name == "char*")
+            return (typeName, definition.Name) switch
             {
-                return new TypeMapping()
-                {
-                    Typename = "string",
-                    Usage = usage,
-                    MarshalAs =
-                    [
-                        new TypeAttribute()
-                        {
-                            Usage = Usage.Parameter | Usage.ReturnValue | Usage.COM,
-                            Attribute = "MarshalAs(UnmanagedType.LPStr)"
-                        }
-                    ]
-                };
-            }
-            if (definition?.Name == "sbyte*")
-            {
-                return new TypeMapping()
-                {
-                    Typename = "string",
-                    Usage = usage,
-                    MarshalAs =
-                    [
-                        new TypeAttribute()
-                        {
-                            Usage = Usage.Parameter | Usage.ReturnValue | Usage.COM,
-                            Attribute = "MarshalAs(UnmanagedType.LPStr)"
-                        }
-                    ]
-                };
-            }
-            return null;
+                //ASCII
+                ("sbyte*", var name) when
+                    //sbyte might also be int8_t...
+                    name.ToLower().Contains("char") ||
+                    name.ToLower().Contains("sbyte") => new TypeMapping()
+                    {
+                        TypeName = "string",
+                        TypeUsage = Usage.Parameter | Usage.ReturnValue | Usage.COM,
+                        MarshalAs =
+                        [
+                            new TypeAttribute()
+                            {
+                                Usage = Usage.All,
+                                Attribute = "MarshalAs(UnmanagedType.LPStr)"
+                            }
+                        ]
+                    },
+                //UTF-16
+                ("char*", var name) when
+                    name.ToLower().Contains("char") => new TypeMapping()
+                    {
+                        TypeName = "string",
+                        TypeUsage = Usage.Parameter | Usage.ReturnValue | Usage.COM,
+                        MarshalAs =
+                        [
+                            new TypeAttribute()
+                            {
+                                Usage = Usage.All,
+                                Attribute = "MarshalAs(UnmanagedType.LPWStr)"
+                            }
+                        ]
+                    },
+                //Unknown
+                _ => null,
+            };
         }
 
         protected override void GenerateDefinitions(IEnumerable<ImportFunctionDefinitionBase> functions)
@@ -169,6 +172,15 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 default:
                     throw new NotSupportedException($"Unknown calling convention: {callingConvention}");
             }
+        }
+
+        private static string GetBaseTypeName(IDefinition definition)
+        {
+            if (definition is TypeDefinition typeDefinition)
+                return GetBaseTypeName(typeDefinition.GetNestedType());
+            if (definition is PointerDefinition pointerDefinition)
+                return GetBaseTypeName(pointerDefinition.Type.Definition!) + "*";
+            return definition.Name;
         }
     }
 }

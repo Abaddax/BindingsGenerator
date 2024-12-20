@@ -36,9 +36,9 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Common
                 }
             }
             if (useMapping && usage == Usage.Unknown)
-                name = mapping?.Typename;
-            else if (useMapping && mapping != null && mapping.Usage.HasFlag(usage))
-                name = mapping.Typename;
+                name = mapping?.TypeName;
+            else if (useMapping && mapping != null && mapping.TypeUsage.HasFlag(usage))
+                name = mapping.TypeName;
             name ??= definition.Name;
 
             //Build

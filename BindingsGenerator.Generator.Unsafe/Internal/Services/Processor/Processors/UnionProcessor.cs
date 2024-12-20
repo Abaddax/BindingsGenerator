@@ -72,10 +72,12 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Processor.Process
         private IEnumerable<MemberField> ListFields(Class union, UnionDefinition? existingDefinition = null)
         {
             var fields = new List<MemberField>(existingDefinition?.Fields ?? Array.Empty<MemberField>());
-            foreach (var field in union.Fields)
+            for (int i = 0; i < union.Fields.Count; i++)
             {
+                var field = union.Fields[i];
+
                 if (string.IsNullOrEmpty(field.Name))
-                    continue; //no field name -> invalid
+                    field.Name = $"anonymousField_{i}"; //no field name -> anonymous
                 if (fields.Any(f => f.Name == field.Name))
                     continue; //Already present
 
@@ -86,7 +88,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Processor.Process
                 {
                     Name = field.Name,
                     FieldType = fieldToken,
-                    FieldOffset = union.Layout.Fields.First(f => f.Name == field.Name).Offset,
+                    FieldOffset = union.Layout.Fields.FirstOrDefault(f => f.Name == field.Name)?.Offset ?? union.Layout.Fields[i].Offset,
                     IsStatic = field.IsStatic,
                     AccessSpecifier = field.Access,
                     Documentation = field.GetDocumentation(),

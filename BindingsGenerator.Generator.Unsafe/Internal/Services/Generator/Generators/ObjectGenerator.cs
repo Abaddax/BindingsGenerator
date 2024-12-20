@@ -38,58 +38,52 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
         {
             if (definition is TypeDefinition typeDefinition)
                 definition = typeDefinition.GetNestedType();
-            if (definition is ObjectDefinition class1)
+
+            return definition switch
             {
-                //No special alias
-                if (class1.IsPOD() && Context.Options.IsFinal)
+                ObjectDefinition @class when definition is ObjectDefinition => @class switch
                 {
-                    return null;
-                }
-                //Direct instance
-                else
-                {
-                    return new TypeMapping()
+                    //No special alias
+                    _ when @class.IsPOD() && Context.Options.IsFinal => null,
+                    //Direct instance
+                    _ => new TypeMapping()
                     {
-                        Typename = $"{@class1.Name}_Instance",
-                        Usage = usage
-                    };
-                }
-            }
-            if (definition is PointerDefinition pointer &&
-                pointer.Type.Definition is ObjectDefinition class2)
-            {
-                //No special alias
-                if (class2.IsPOD() && Context.Options.IsFinal)
+                        TypeName = $"{@class.Name}_Instance",
+                        TypeUsage = Usage.All
+                    }
+                },
+                PointerDefinition pointer when definition is PointerDefinition => pointer switch
                 {
-                    return null;
-                }
-                else if (usage.HasFlag(Usage.COM) && class2.IsComObject == null)
-                {
-                    return new TypeMapping()
+                    //No special alias
+                    _ when pointer.GetPointedType() is ObjectDefinition @class &&
+                        (@class.IsPOD() && Context.Options.IsFinal) => null,
+                    //Interface
+                    _ when pointer.Type.Definition is ObjectDefinition @class &&
+                        !(usage.HasFlag(Usage.COM) || usage.HasFlag(Usage.Field)) => new TypeMapping()
+                        {
+                            TypeName = @class.Name,
+                            TypeUsage = Usage.Parameter | Usage.ReturnValue,
+                            MarshalAs =
+                            [
+                                new TypeAttribute()
+                                {
+                                    Usage = Usage.Parameter | Usage.ReturnValue,
+                                    Attribute = $"MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeInstanceMarshaler<{_typeHelper.GetFullTypeName(@class, useMapping: false)}_Impl>))"
+                                }
+                            ]
+                        },
+                    //Instance pointer
+                    _ when pointer.GetPointedType() is ObjectDefinition @class => new TypeMapping()
                     {
-                        Typename = $"{@class2.Name}_Instance*",
-                        Usage = usage
-                    };
-                }
-                //Interface
-                else
-                {
-                    return new TypeMapping()
-                    {
-                        Typename = @class2.Name,
-                        Usage = usage,
-                        MarshalAs =
-                        [
-                            new TypeAttribute()
-                            {
-                                Usage = Usage.Parameter | Usage.ReturnValue,
-                                Attribute = $"MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeInstanceMarshaler<{_typeHelper.GetFullTypeName(@class2, useMapping: false)}_Impl>))"
-                            }
-                        ]
-                    };
-                }
-            }
-            return null;
+                        TypeName = $"{@class.Name}_Instance" + new string('*', pointer.GetPointerDepth()),
+                        TypeUsage = Usage.Field | Usage.COM
+                    },
+                    //Unknown
+                    _ => null
+                },
+                //Unknown
+                _ => null
+            };
         }
         protected override NameScope? GenerateTypeScope(ObjectDefinition @class, Usage usage)
         {

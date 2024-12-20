@@ -84,10 +84,12 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Processor.Process
         {
             var fields = new List<MemberField>(existingDefinition?.Fields ?? Array.Empty<MemberField>());
             //Scan fields
-            foreach (var field in @class.Fields)
+            for (int i = 0; i < @class.Fields.Count; i++)
             {
+                var field = @class.Fields[i];
+
                 if (string.IsNullOrEmpty(field.Name))
-                    continue; //no field name -> invalid
+                    field.Name = $"anonymousField_{i}"; //no field name -> anonymous
                 if (fields.Any(f => f.Name == field.Name))
                     continue; //Already present
 
@@ -98,7 +100,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Processor.Process
                 {
                     Name = field.Name,
                     FieldType = fieldToken,
-                    FieldOffset = @class.Layout.Fields.First(f => f.Name == field.Name).Offset,
+                    FieldOffset = @class.Layout.Fields.FirstOrDefault(f => f.Name == field.Name)?.Offset ?? @class.Layout.Fields[i].Offset,
                     IsStatic = field.IsStatic,
                     AccessSpecifier = field.Access,
                     Documentation = field.GetDocumentation(),

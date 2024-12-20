@@ -24,8 +24,6 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Processor.Process
 
         protected override IDefinition? ProcessPreprocessedEntity(PreprocessedEntity preprocessedEntity, Declaration parent)
         {
-            /*if (preprocessedEntity.MacroLocation == MacroLocation.ClassHead)
-                Debugger.Break();*/
             return preprocessedEntity switch
             {
                 CppSharp.AST.MacroDefinition macroDefinition => ProcessPreprocessedEntity(macroDefinition, parent),
@@ -37,8 +35,6 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Processor.Process
 
         private IDefinition ProcessPreprocessedEntity(CppSharp.AST.MacroDefinition macro, Declaration parent)
         {
-            if (macro.MacroLocation == MacroLocation.ClassHead)
-                Debugger.Break();
             string contentHash;
             using (var sha = SHA256.Create())
             {

@@ -3,6 +3,7 @@
     [Flags]
     internal enum Usage
     {
+        All = ~0,
         Unknown = 0,
         ReturnValue = 1 << 0,
         Parameter = 1 << 1,

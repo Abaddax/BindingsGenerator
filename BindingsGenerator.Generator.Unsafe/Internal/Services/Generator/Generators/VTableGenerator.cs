@@ -42,7 +42,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 WriteSummary(vtable);
                 WriteGeneratedCodeAttribute();
                 WriteObsoletion(vtable);
-                WriteLine("[StructLayout(LayoutKind.Explicit)]");
+                WriteLine($"[StructLayout(LayoutKind.Explicit)]");
                 WriteLine($"internal unsafe partial struct {vtable.Name}");
 
                 using (BeginBlock())

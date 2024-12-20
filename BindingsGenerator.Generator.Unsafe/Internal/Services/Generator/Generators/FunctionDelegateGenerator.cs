@@ -36,61 +36,46 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
 
         protected override TypeMapping? GenerateTypeMapping(IDefinition definition, Usage usage)
         {
-            //Function
-            if (definition is FunctionDefinition function1)
+            return definition switch
             {
-                return new TypeMapping()
+                FunctionDefinitionBase function => function switch
                 {
-                    Typename = $"{GenerateNestedName(function1, out _, out _)}_delegate",
-                    Usage = usage,
-                };
-            }
-            //Delegate
-            if (definition is DelegateDefinition function2)
-            {
-                return new TypeMapping()
+                    //Function or Delegate
+                    _ when function is FunctionDefinition || function is DelegateDefinition => new TypeMapping()
+                    {
+                        TypeName = $"{GenerateNestedName(function, out _, out _)}_delegate",
+                        TypeUsage = Usage.All,
+                    },
+                    //Unknown
+                    _ => null
+                },
+                PointerDefinition pointer => pointer.Type.Definition switch
                 {
-                    Typename = $"{GenerateNestedName(function2, out _, out _)}_delegate",
-                    Usage = usage,
-                };
-            }
-            //Function pointer
-            if (definition is PointerDefinition pointer1 &&
-               pointer1.Type.Definition is FunctionDefinition function3)
-            {
-                return new TypeMapping()
-                {
-                    Typename = $"{GenerateNestedName(function3, out _, out _)}_delegate*",
-                    Usage = usage,
-                    MarshalAs =
-                    [
-                        new TypeAttribute()
+                    FunctionDefinitionBase function => function switch
+                    {
+                        //Function or Delegate
+                        _ when function is FunctionDefinition || function is DelegateDefinition => new TypeMapping()
                         {
-                            Usage = Usage.Parameter | Usage.ReturnValue | Usage.Field,
-                            Attribute = "MarshalAs(UnmanagedType.FunctionPtr)"
-                        }
-                    ]
-                };
-            }
-            //Delegate pointer
-            if (definition is PointerDefinition pointer2 &&
-               pointer2.Type.Definition is DelegateDefinition function4)
-            {
-                return new TypeMapping()
-                {
-                    Typename = $"{GenerateNestedName(function4, out _, out _)}_delegate*",
-                    Usage = usage,
-                    MarshalAs =
-                    [
-                        new TypeAttribute()
-                        {
-                            Usage = Usage.Parameter | Usage.ReturnValue | Usage.Field,
-                            Attribute = "MarshalAs(UnmanagedType.FunctionPtr)"
-                        }
-                    ]
-                };
-            }
-            return null;
+                            TypeName = $"{GenerateNestedName(function, out _, out _)}_delegate*",
+                            TypeUsage = Usage.All,
+                            MarshalAs =
+                            [
+                                new TypeAttribute()
+                            {
+                                Usage = Usage.Parameter | Usage.ReturnValue | Usage.Field,
+                                Attribute = "MarshalAs(UnmanagedType.FunctionPtr)"
+                            }
+                            ]
+                        },
+                        //Unknown
+                        _ => null
+                    },
+                    //Unknown
+                    _ => null
+                },
+                //Unknown
+                _ => null
+            };
         }
         protected override NameScope? GenerateTypeScope(FunctionDefinitionBase function, Usage usage)
         {
