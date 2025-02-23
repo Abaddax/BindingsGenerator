@@ -135,6 +135,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 WriteLine("/// <remarks>This struct is incomplete.</remarks>");
             WriteGeneratedCodeAttribute();
             WriteObsoletion(@class);
+            WriteSupportedOsPlatformAttribute();
             WriteLine("[StructLayout(LayoutKind.Explicit)]");
             WriteLine($"public unsafe partial struct {@class.Name}{suffix}");
 
@@ -167,6 +168,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 WriteLine("/// <remarks>This interface is incomplete.</remarks>");
             WriteGeneratedCodeAttribute();
             WriteObsoletion(@class);
+            WriteSupportedOsPlatformAttribute();
             WriteLine($"public unsafe partial interface {@class.Name} {BuildInheritanceString(@class)}");
 
             using (BeginBlock())
@@ -223,6 +225,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 WriteLine("/// <remarks>This struct is incomplete.</remarks>");
             WriteGeneratedCodeAttribute();
             WriteObsoletion(@class);
+            WriteSupportedOsPlatformAttribute();
             WriteLine($"internal unsafe partial struct {@class.Name}_Impl {BuildInheritanceString(@class, true)}");
 
             using (BeginBlock())
@@ -316,6 +319,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 WriteLine("/// <remarks>This struct is incomplete.</remarks>");
             WriteGeneratedCodeAttribute();
             WriteObsoletion(@class);
+            WriteSupportedOsPlatformAttribute();
             WriteLine("[StructLayout(LayoutKind.Explicit)]");
             WriteLine($"public unsafe partial struct {@class.Name}_Instance");
 

@@ -281,6 +281,15 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Models.Generator
         {
             WriteLine($"[System.CodeDom.Compiler.GeneratedCode(\"{this.GetType().FullName}\", \"{this.GetType().Assembly.GetName().Version}\")]");
         }
+        protected void WriteSupportedOsPlatformAttribute()
+        {
+            if (Context.Options.SupportedOsPlatform.HasFlag(Core.Models.Enums.GeneratorSupportedOSPlatform.All))
+                return;
+            if (Context.Options.SupportedOsPlatform.HasFlag(Core.Models.Enums.GeneratorSupportedOSPlatform.Windows))
+                WriteLine("[System.Runtime.Versioning.SupportedOSPlatform(\"windows\")]");
+            if (Context.Options.SupportedOsPlatform.HasFlag(Core.Models.Enums.GeneratorSupportedOSPlatform.Linux))
+                WriteLine("[System.Runtime.Versioning.SupportedOSPlatform(\"linux\")]");
+        }
         private static string EscapeXmlString(string content) => SecurityElement.Escape(content);
         private static string EscapeQuotes(string s) => s.Replace("\"", "\\\"");
         #endregion

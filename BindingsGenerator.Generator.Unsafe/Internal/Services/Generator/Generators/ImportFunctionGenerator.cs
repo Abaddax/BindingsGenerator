@@ -109,10 +109,9 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
         protected override void GenerateDefinition(ImportFunctionDefinitionBase function)
         {
             WriteGeneratedCodeAttribute();
-
             if (Context.Options.SuppressUnmanagedCodeSecurity)
                 WriteLine("[SuppressUnmanagedCodeSecurity]");
-
+            WriteSupportedOsPlatformAttribute();
             WriteLine($"[DllImport(\"{function.LibraryName}\", EntryPoint = \"{function.FunctionSignature}\", CallingConvention = CallingConvention.{Convert(function.CallingConvention)})]");
 
             var returnType = _paramHelper.GetReturnType(function, out var returnAttribute);

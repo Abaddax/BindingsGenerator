@@ -1,7 +1,7 @@
 ﻿using BindingsGenerator.Core;
 using BindingsGenerator.Core.Contracts;
 using BindingsGenerator.Core.Helper;
-using BindingsGenerator.Core.Models;
+using BindingsGenerator.Core.Models.Enums;
 using BindingsGenerator.Generator.Unsafe.Internal.Models;
 using CppSharp;
 using CppSharp.AST;

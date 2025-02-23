@@ -3,7 +3,6 @@ using BindingsGenerator.Generator.Unsafe.Internal.Definition.Definitions;
 using BindingsGenerator.Generator.Unsafe.Internal.Models.Generator;
 using BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Common;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
 
 namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generators
 {
@@ -45,6 +44,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                     WriteLine("/// <remarks>This union is incomplete.</remarks>");
                 WriteGeneratedCodeAttribute();
                 WriteObsoletion(union);
+                WriteSupportedOsPlatformAttribute();
                 WriteLine("[StructLayout(LayoutKind.Explicit)]");
                 WriteLine($"public unsafe partial struct {union.Name}");
 

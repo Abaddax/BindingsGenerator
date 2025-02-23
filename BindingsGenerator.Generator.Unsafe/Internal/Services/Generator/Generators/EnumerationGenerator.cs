@@ -37,6 +37,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 WriteSummary(@enum);
                 WriteGeneratedCodeAttribute();
                 WriteObsoletion(@enum);
+                WriteSupportedOsPlatformAttribute();
                 WriteLine($"public enum {@enum.Name} : {_typeHelper.GetFullTypeName(@enum.UnderlyingType)}");
 
                 using (BeginBlock())

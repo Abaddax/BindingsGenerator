@@ -61,10 +61,10 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                             MarshalAs =
                             [
                                 new TypeAttribute()
-                            {
-                                Usage = Usage.Parameter | Usage.ReturnValue | Usage.Field,
-                                Attribute = "MarshalAs(UnmanagedType.FunctionPtr)"
-                            }
+                                {
+                                    Usage = Usage.Parameter | Usage.ReturnValue | Usage.Field,
+                                    Attribute = "MarshalAs(UnmanagedType.FunctionPtr)"
+                                }
                             ]
                         },
                         //Unknown

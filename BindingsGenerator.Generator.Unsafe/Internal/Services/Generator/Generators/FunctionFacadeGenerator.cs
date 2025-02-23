@@ -39,6 +39,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
             WriteReturnComment(function);
             WriteGeneratedCodeAttribute();
             WriteObsoletion(function);
+            WriteSupportedOsPlatformAttribute();
 
             var returnType = _paramHelper.GetReturnType(function, out _);
 

@@ -1,9 +1,11 @@
 ﻿using BindingsGenerator.Core.Helper;
 using BindingsGenerator.Core.Models;
+using BindingsGenerator.Core.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace BindingsGenerator.Core
 {
@@ -46,6 +48,13 @@ namespace BindingsGenerator.Core
                 }
             }
             generator.Options.KnownTypes = new HashSet<string>(generator.Options.KnownTypes).ToList();
+            if (generator.Options.SupportedOsPlatform.HasFlag(GeneratorSupportedOSPlatform.Current))
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    generator.Options.SupportedOsPlatform |= GeneratorSupportedOSPlatform.Windows;
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    generator.Options.SupportedOsPlatform |= GeneratorSupportedOSPlatform.Linux;
+            }
 
             Console.WriteLine("Starting generator...");
 

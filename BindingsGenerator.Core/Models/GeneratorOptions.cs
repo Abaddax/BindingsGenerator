@@ -1,4 +1,5 @@
-﻿using BindingsGenerator.Core.Models.OptionElements;
+﻿using BindingsGenerator.Core.Models.Enums;
+using BindingsGenerator.Core.Models.OptionElements;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
@@ -94,5 +95,7 @@ namespace BindingsGenerator.Core.Models
         /// </remarks>
         [XmlArrayItem("MarkerRegex")]
         public List<string> ComMarkers { get; set; } = new List<string>();
+
+        public GeneratorSupportedOSPlatform SupportedOsPlatform { get; set; } = GeneratorSupportedOSPlatform.All;
     }
 }

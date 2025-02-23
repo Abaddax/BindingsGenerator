@@ -1,4 +1,4 @@
-﻿namespace BindingsGenerator.Core.Models
+﻿namespace BindingsGenerator.Core.Models.Enums
 {
     public enum GeneratorPlatform
     {
