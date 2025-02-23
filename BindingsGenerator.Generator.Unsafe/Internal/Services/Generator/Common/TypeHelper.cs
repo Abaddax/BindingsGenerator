@@ -28,7 +28,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Common
             {
                 if (pointerDefinition.GetPointedType() is TypeDefinition typeDef && typeDef.GetNestedType().Name == "void")
                 {
-                    name = "System.IntPtr" + new string('*', pointerDefinition.GetPointerDepth() - 1);
+                    name = "void*" + new string('*', pointerDefinition.GetPointerDepth() - 1);
                 }
                 else
                 {

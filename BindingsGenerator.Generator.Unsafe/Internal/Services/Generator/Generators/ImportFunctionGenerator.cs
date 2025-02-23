@@ -49,7 +49,8 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 ("sbyte*", var name) when
                     //sbyte might also be int8_t...
                     name.ToLower().Contains("char") ||
-                    name.ToLower().Contains("sbyte") => new TypeMapping()
+                    name.ToLower().Contains("sbyte") ||
+                    name.ToLower().Equals("LPStr", StringComparison.InvariantCultureIgnoreCase) => new TypeMapping()
                     {
                         TypeName = "string",
                         TypeUsage = Usage.Parameter | Usage.ReturnValue | Usage.COM,
@@ -64,7 +65,8 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                     },
                 //UTF-16
                 ("char*", var name) when
-                    name.ToLower().Contains("char") => new TypeMapping()
+                    name.ToLower().Contains("char") ||
+                    name.ToLower().Equals("LPWStr", StringComparison.InvariantCultureIgnoreCase) => new TypeMapping()
                     {
                         TypeName = "string",
                         TypeUsage = Usage.Parameter | Usage.ReturnValue | Usage.COM,

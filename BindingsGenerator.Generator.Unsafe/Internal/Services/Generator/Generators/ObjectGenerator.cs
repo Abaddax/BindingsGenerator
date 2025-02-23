@@ -55,10 +55,10 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 PointerDefinition pointer when definition is PointerDefinition => pointer switch
                 {
                     //No special alias
-                    _ when pointer.GetPointedType() is ObjectDefinition @class &&
+                    _ when pointer.GetPointedType().TryGetNestedType() is ObjectDefinition @class &&
                         (@class.IsPOD() && Context.Options.IsFinal) => null,
                     //Interface
-                    _ when pointer.Type.Definition is ObjectDefinition @class &&
+                    _ when pointer.Type.Definition?.TryGetNestedType() is ObjectDefinition @class &&
                         !(usage.HasFlag(Usage.COM) || usage.HasFlag(Usage.Field)) => new TypeMapping()
                         {
                             TypeName = @class.Name,
@@ -73,7 +73,7 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                             ]
                         },
                     //Instance pointer
-                    _ when pointer.GetPointedType() is ObjectDefinition @class => new TypeMapping()
+                    _ when pointer.GetPointedType().TryGetNestedType() is ObjectDefinition @class => new TypeMapping()
                     {
                         TypeName = $"{@class.Name}_Instance" + new string('*', pointer.GetPointerDepth()),
                         TypeUsage = Usage.Field | Usage.COM

@@ -58,6 +58,12 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Models.Generator
                 return typeDef.GetNestedType();
             return nestedType!;
         }
+        public static IDefinition TryGetNestedType(this IDefinition definition)
+        {
+            if (definition is TypeDefinition typeDef)
+                return typeDef.GetNestedType();
+            return definition;
+        }
 
         public static string GetFunctionName(this FunctionDefinitionBase function)
         {

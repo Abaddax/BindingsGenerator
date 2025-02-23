@@ -34,8 +34,8 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                 return; //Already typedefed
             var nestedTypeName = _typeHelper.GetFullTypeName(nestedType, useMapping: false);
             if (nestedTypeName == "void")
-                return; //cannot typedef void (edge-case)
-            if (nestedType is IFinalDefinition)
+                return; //cannot typedef void (edge-case) 
+            if (nestedType is IFinalDefinition && nestedTypeName != "System.IntPtr")
                 nestedTypeName = $"{Context.Options.RootNamespace}.{nestedTypeName}";
 
             WriteLine($"global using {typeName} = {nestedTypeName};");

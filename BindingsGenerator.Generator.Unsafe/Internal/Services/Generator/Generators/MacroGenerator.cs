@@ -71,7 +71,9 @@ namespace BindingsGenerator.Generator.Unsafe.Internal.Services.Generator.Generat
                             {
                                 custom = true;
                                 //Check if type is known
-                                var found = _allDefinitions.Any(x => x.Name == type.Type);
+                                var found = _allDefinitions
+                                    .Where(x => x.Name == type.Type)
+                                    .Any(x => x.TryGetNestedType() is not IFinalDefinition);
                                 if (!found)
                                     return;
                                 typeName = type.ToString()!;
